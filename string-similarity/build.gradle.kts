@@ -1,3 +1,7 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JsMainFunctionExecutionMode
+import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
+import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 import org.jetbrains.kotlin.konan.target.HostManager
 
 plugins {
@@ -12,17 +16,19 @@ kotlin {
     explicitApi()
     jvm()
     js {
-        compilations.all {
-            kotlinOptions {
-                moduleKind = "umd"
-                sourceMap = true
-                metaInfo = true
-                main = "noCall"
-                sourceMapEmbedSources = "always"
-            }
+        compilerOptions {
+            moduleKind = JsModuleKind.MODULE_UMD
+            sourceMap = true
+            main = JsMainFunctionExecutionMode.NO_CALL
+            sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
         }
         nodejs()
         browser()
+    }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        nodejs()
     }
 
     // Tier 1
@@ -64,18 +70,18 @@ kotlin {
         all {
             languageSettings.optIn("kotlin.ExperimentalStdlibApi")
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(libs.kotlin.test.common)
                 implementation(libs.kotlin.test.annotations.common)
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(libs.kotlin.test.junit)
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(libs.kotlin.test.js)
             }
@@ -83,6 +89,9 @@ kotlin {
     }
 }
 
-tasks.dokkaHtml.configure {
-    outputDirectory.set(rootDir.resolve("docs"))
+tasks {
+    dokkaGeneratePublicationHtml {
+        outputDirectory = rootDir.resolve("docs")
+    }
 }
+
