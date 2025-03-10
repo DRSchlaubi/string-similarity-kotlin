@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JsMainFunctionExecutionMode
 import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
@@ -7,7 +9,7 @@ import java.util.Base64
 
 plugins {
     kotlin("multiplatform")
-    id("com.vanniktech.maven.publish")
+    id("com.vanniktech.maven.publish.basic")
     id("binary-compatibility-validator")
     id("com.diffplug.spotless")
     id("org.jetbrains.dokka")
@@ -113,3 +115,6 @@ publishing {
     }
 }
 
+mavenPublishing {
+    configure(KotlinMultiplatform(JavadocJar.Dokka("dokkaGeneratePublicationHtml")))
+}
