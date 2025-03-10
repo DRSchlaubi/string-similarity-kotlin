@@ -9,7 +9,7 @@ import java.util.Base64
 
 plugins {
     kotlin("multiplatform")
-    id("com.vanniktech.maven.publish.basic")
+    id("com.vanniktech.maven.publish.base")
     id("binary-compatibility-validator")
     id("com.diffplug.spotless")
     id("org.jetbrains.dokka")
