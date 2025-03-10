@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JsMainFunctionExecutionMode
 import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 import org.jetbrains.kotlin.konan.target.HostManager
+import java.util.Base64
 
 plugins {
     kotlin("multiplatform")
@@ -92,6 +93,23 @@ kotlin {
 tasks {
     dokkaGeneratePublicationHtml {
         outputDirectory = rootDir.resolve("docs")
+    }
+}
+
+publishing {
+    repositories {
+        maven("https://europe-west3-maven.pkg.dev/mik-music/mikbot") {
+            credentials {
+                username = "_json_key_base64"
+                password = System.getenv("GOOGLE_KEY")?.toByteArray()?.let {
+                    Base64.getEncoder().encodeToString(it)
+                }
+            }
+
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
     }
 }
 
